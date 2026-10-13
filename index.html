@@ -1,0 +1,805 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#0F1014">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Зона комфорта">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>Зона комфорта</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Golos+Text:wght@400;500;600;700&family=PT+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0F1014; --card:#1A1C22; --card2:#23262E; --line:#2E323C; --line2:#4A4E59;
+  --text:#F2F0EB; --muted:#9A9DA6; --soft:#C9CBD1; --dim:#6B6F7A;
+  --acc:#C6F36B; --accDark:#1A2010; --onAcc:#0B0C0E;
+  --st:env(safe-area-inset-top,0px); --sb:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:'Golos Text',-apple-system,sans-serif;font-size:15px;-webkit-font-smoothing:antialiased}
+body{min-height:100vh;overscroll-behavior-y:none}
+body.blur #app{filter:blur(24px)}
+button,input,textarea{font-family:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--acc)}
+#app{max-width:480px;margin:0 auto;min-height:100vh;padding:calc(var(--st) + 12px) 20px calc(var(--sb) + 110px)}
+#app.noNav{padding-bottom:calc(var(--sb) + 24px)}
+.mono{font-family:'PT Mono',monospace,monospace;font-size:11px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase}
+.h1{font-family:'Unbounded',sans-serif;font-weight:700;font-size:24px;line-height:1.15;margin:2px 0 0}
+.h2{font-family:'Unbounded',sans-serif;font-weight:700;font-size:20px;line-height:1.2}
+.num{font-family:'Unbounded',sans-serif;font-weight:700}
+.lbl{font-size:13px;font-weight:600;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin:22px 0 8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px}
+.muted{color:var(--muted)} .soft{color:var(--soft)} .acc{color:var(--acc)}
+.small{font-size:13px} .xs{font-size:12px}
+.row{display:flex;align-items:center;gap:12px}
+.between{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.grow{flex:1;min-width:0}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.iconBtn{width:44px;height:44px;border-radius:22px;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0}
+.btn{height:54px;border-radius:16px;border:0;background:var(--acc);color:var(--onAcc);font-family:'Unbounded',sans-serif;font-weight:700;font-size:15px;width:100%;display:flex;align-items:center;justify-content:center;gap:10px}
+.btn:disabled{opacity:.35}
+.btn2{height:46px;border-radius:14px;border:1px solid var(--line2);background:transparent;font-weight:600;font-size:14px;width:100%}
+.link{background:none;border:0;padding:10px 0;color:var(--muted);font-weight:600;font-size:14px;width:100%}
+.chip{height:38px;padding:0 14px;border-radius:19px;border:1px solid var(--line);background:transparent;font-weight:600;font-size:14px;white-space:nowrap}
+.chip.on{background:var(--acc);color:var(--onAcc);border-color:var(--acc)}
+.chip.dash{border-style:dashed;color:var(--muted)}
+.tag{height:34px;padding:0 12px;border-radius:17px;border:1px solid var(--line);background:transparent;color:var(--soft);font-weight:600;font-size:13px}
+.tag.on{border-color:var(--acc);background:var(--accDark);color:var(--acc)}
+.wrap{display:flex;flex-wrap:wrap;gap:8px}
+.field{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:0 14px;height:50px;width:100%;font-size:16px;outline:none}
+.field:focus{border-color:var(--line2)}
+textarea.field{height:auto;padding:12px 14px;resize:none;line-height:1.4}
+.list .it{padding:11px 0;border-bottom:1px solid var(--card2)}
+.list .it:last-child{border-bottom:0}
+.av{width:44px;height:44px;border-radius:22px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-family:'Unbounded',sans-serif;font-weight:700;font-size:14px;flex-shrink:0}
+.av.on{background:var(--acc);color:var(--onAcc)}
+.bar{height:4px;border-radius:2px;background:var(--card2);overflow:hidden}
+.bar>div{height:4px;background:var(--acc);border-radius:2px}
+.badge{display:inline-block;padding:2px 7px;border-radius:6px;border:1px solid var(--acc);color:var(--acc);font-size:10px;font-weight:700;letter-spacing:.5px;vertical-align:middle}
+.dots{display:flex;gap:4px}.dots i{width:18px;height:4px;border-radius:2px;background:var(--line)}.dots i.on{background:var(--acc)}
+.act{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;text-align:left;width:100%;display:flex;flex-direction:column;gap:6px}
+.act.on{border:2px solid var(--acc);background:var(--accDark);padding:11px 13px}
+.strike{text-decoration:line-through;opacity:.5}
+.empty{padding:28px 10px;text-align:center;color:var(--muted);font-size:14px;line-height:1.5}
+nav.tab{position:fixed;left:0;right:0;bottom:calc(var(--sb) + 10px);max-width:456px;margin:0 auto;width:calc(100% - 24px);padding:8px;border-radius:28px;background:var(--card);border:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;z-index:5}
+nav.tab button{width:64px;height:52px;background:none;border:0;color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:600;padding:0}
+nav.tab button.on{color:var(--text)}
+nav.tab .plus{width:60px;height:60px;border-radius:30px;background:var(--acc);color:var(--onAcc)}
+.toggle{width:46px;height:28px;border-radius:14px;background:var(--line);border:0;padding:3px;display:flex;flex-shrink:0}
+.toggle i{width:22px;height:22px;border-radius:11px;background:var(--muted);display:block;transition:transform .15s}
+.toggle.on{background:var(--acc)}.toggle.on i{background:var(--onAcc);transform:translateX(18px)}
+.seg{display:grid;gap:4px;padding:4px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.seg button{height:36px;border-radius:10px;border:0;background:transparent;color:var(--muted);font-weight:600;font-size:13px}
+.seg button.on{background:var(--text);color:var(--bg)}
+.toast{position:fixed;left:50%;bottom:calc(var(--sb) + 96px);transform:translateX(-50%);background:var(--text);color:var(--bg);padding:12px 18px;border-radius:14px;font-weight:600;font-size:14px;z-index:20;max-width:90%;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.stamp{display:inline-block;padding:6px 14px;border:2px solid var(--acc);border-radius:8px;color:var(--acc);font-family:'PT Mono',monospace,monospace;font-size:13px;letter-spacing:2px;transform:rotate(-3deg)}
+@keyframes hit{0%{transform:rotate(-40deg)}55%{transform:rotate(12deg)}75%{transform:rotate(-4deg)}100%{transform:rotate(0)}}
+@keyframes pop{0%{transform:scale(.6) rotate(-3deg);opacity:0}100%{transform:scale(1) rotate(-3deg);opacity:1}}
+.gavel{animation:hit .55s ease-out both;transform-origin:70% 70%}
+.stamp.anim{animation:pop .35s .4s ease-out both}
+.pin{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:300px;margin:0 auto}
+.pin button{height:68px;border-radius:34px;border:1px solid var(--line);background:var(--card);font-family:'Unbounded',sans-serif;font-size:22px}
+.pindots{display:flex;gap:14px;justify-content:center;margin:24px 0 36px}
+.pindots i{width:14px;height:14px;border-radius:7px;border:2px solid var(--line2)}
+.pindots i.on{background:var(--acc);border-color:var(--acc)}
+.wbars{display:grid;gap:6px;align-items:end;height:84px}
+.wbars>div{display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
+.wbars b{width:100%;border-radius:5px 5px 2px 2px;background:var(--line2);display:block;min-height:3px}
+.wbars b.on{background:var(--acc)}
+.wbars span{font-size:10px;color:var(--muted)}
+.hbar{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.hbar .n{width:92px;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hbar .t{flex:1;height:20px;border-radius:6px;background:var(--card);overflow:hidden}
+.hbar .t div{height:20px;border-radius:6px;background:var(--line2)}
+.hbar .t div.on{background:var(--acc)}
+.hbar .v{width:26px;text-align:right;font-family:'Unbounded',sans-serif;font-weight:700;font-size:13px}
+.ach{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--card2)}
+.ach .i{width:34px;height:34px;border-radius:17px;display:flex;align-items:center;justify-content:center;background:var(--card2);color:var(--dim);flex-shrink:0}
+.ach.on .i{background:var(--acc);color:var(--onAcc)}
+.ach:not(.on) .t{color:var(--dim)}
+:root{color-scheme:dark}
+.modalWrap{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:flex-end;justify-content:center;z-index:30;padding:16px}
+.modal{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;width:100%;max-width:440px;margin-bottom:var(--sb)}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.gavel,.stamp.anim{animation:none}}
+.banner{border:1px dashed var(--acc);border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:12px;background:none;width:100%;text-align:left;margin-top:12px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="navHost"></div>
+<input type="file" id="importFile" accept="application/json,.json" style="display:none">
+<script>
+'use strict';
+/* ================= КАТАЛОГ =================
+   kind: prison — лишение свободы (годы), restr — ограничение свободы (годы),
+   fine — штраф (БВ), arrestAdm — административный арест (сутки), hours — общественные работы (часы)
+   lifeDeath — санкция допускает пожизненное/смертную казнь
+   v — санкция сверена по источнику (false — по памяти, сверить)        */
+const CAT = [
+ {id:'k1', code:'КоАП', num:'10.1 ч.1', title:'Умышленное причинение телесного повреждения', sev:2, cat:'Административка', kind:'fine', min:10, max:30, sanction:'Штраф 10–30 БВ, или общественные работы, или административный арест', acts:['Стукнуть папкой','Дать подзатыльник','Ущипнуть до синяка'], v:true},
+ {id:'k2', code:'КоАП', num:'10.1 ч.2', title:'Нанесение побоев', sev:1, cat:'Административка', kind:'fine', min:1, max:10, sanction:'Штраф до 10 БВ, или общественные работы, или административный арест', acts:['Отвесить пощёчину','Толкнуть в коридоре'], v:false},
+ {id:'k3', code:'КоАП', num:'10.2 ч.1', title:'Оскорбление', sev:1, cat:'Административка', kind:'fine', min:1, max:30, sanction:'Штраф до 30 БВ', acts:['Нахамить в ответ','Обозвать при всех','Показать неприличный жест'], v:true},
+ {id:'k4', code:'КоАП', num:'10.2 ч.2', title:'Оскорбление публично или в интернете', sev:2, cat:'Административка', kind:'fine', min:10, max:200, sanction:'Штраф 10–200 БВ, или общественные работы, или административный арест', acts:['Высказать всё в общем чате','Написать про него в сторис'], v:true},
+ {id:'k5', code:'КоАП', num:'11.3', title:'Умышленные уничтожение либо повреждение чужого имущества', sev:1, cat:'Административка', kind:'fine', min:1, max:30, sanction:'Штраф до 30 БВ', acts:['Разбить его кружку','Сломать его ручку','Пролить кофе на его бумаги'], v:false},
+ {id:'k6', code:'КоАП', num:'19.1', title:'Мелкое хулиганство', sev:2, cat:'Административка', kind:'fine', min:2, max:30, sanction:'Штраф 2–30 БВ, или общественные работы, или административный арест', acts:['Устроить сцену в приёмной','Наорать матом в коридоре'], v:true},
+ {id:'k7', code:'КоАП', num:'11.1', title:'Мелкое хищение', sev:1, cat:'Административка', kind:'fine', min:2, max:30, sanction:'Штраф 2–30 БВ, или общественные работы, или административный арест', acts:['Утащить его шоколадку','Забрать его зарядку'], v:false},
+
+ {id:'u4', code:'УК', num:'218 ч.1', title:'Умышленные уничтожение или повреждение имущества', sev:2, cat:'Имущество', kind:'restr', min:0.25, max:2, sanction:'Общественные работы, штраф, исправительные работы до 2 лет, арест или ограничение свободы до 2 лет', acts:['Разбить его ноутбук','Порвать его документы','Выкинуть его вещи в окно'], v:true},
+ {id:'u5', code:'УК', num:'218 ч.2', title:'Уничтожение имущества общеопасным способом', sev:4, cat:'Имущество', kind:'prison', min:3, max:10, sanction:'Ограничение свободы до 5 лет или лишение свободы от 3 до 10 лет', acts:['Сжечь его машину','Поджечь его кабинет'], v:true},
+ {id:'u6', code:'УК', num:'205 ч.1', title:'Кража', sev:2, cat:'Имущество', kind:'prison', min:0.25, max:3, sanction:'Общественные работы, штраф, исправительные работы до 2 лет, арест, ограничение или лишение свободы до 3 лет', acts:['Украсть его печать','Унести его кресло'], v:true},
+ {id:'u7', code:'УК', num:'206 ч.1', title:'Грабёж', sev:3, cat:'Имущество', kind:'prison', min:0.25, max:4, sanction:'Общественные работы, штраф, исправительные работы до 2 лет, арест, ограничение или лишение свободы до 4 лет', acts:['Отобрать его телефон при всех'], v:true},
+ {id:'u8', code:'УК', num:'208 ч.1', title:'Вымогательство', sev:3, cat:'Имущество', kind:'prison', min:0.25, max:5, sanction:'Штраф, исправительные работы до 2 лет, арест, ограничение или лишение свободы до 5 лет', acts:['Требовать премию за молчание'], v:true},
+
+ {id:'u1', code:'УК', num:'339 ч.1', title:'Хулиганство', sev:3, cat:'Хулиганство и угрозы', kind:'prison', min:0.25, max:3, repeat:'u2', sanction:'Общественные работы, штраф, исправительные работы до 2 лет, арест, ограничение свободы до 2 лет или лишение свободы до 3 лет', acts:['Разнести кабинет','Перевернуть его стол'], v:true},
+ {id:'u2', code:'УК', num:'339 ч.2', title:'Злостное хулиганство (в т.ч. повторное)', sev:3, cat:'Хулиганство и угрозы', kind:'prison', min:1, max:6, sanction:'Арест, ограничение свободы или лишение свободы от 1 до 6 лет', acts:['Разнести кабинет ещё раз'], v:true},
+ {id:'u3', code:'УК', num:'339 ч.3', title:'Особо злостное хулиганство', sev:4, cat:'Хулиганство и угрозы', kind:'prison', min:3, max:10, sanction:'Ограничение свободы от 3 до 5 лет или лишение свободы от 3 до 10 лет', acts:['Разнести весь этаж'], v:true},
+ {id:'u9', code:'УК', num:'186', title:'Угроза убийством, причинением тяжких телесных повреждений или уничтожением имущества', sev:2, cat:'Хулиганство и угрозы', kind:'prison', min:0.25, max:2, sanction:'Общественные работы, штраф, арест, ограничение или лишение свободы до 2 лет', acts:['Пообещать расправу','Сказать «тебе конец»'], v:false},
+ {id:'u10', code:'УК', num:'188 ч.1', title:'Клевета', sev:1, cat:'Хулиганство и угрозы', kind:'restr', min:0.25, max:2, sanction:'Общественные работы, штраф, исправительные работы, арест или ограничение свободы до 2 лет', acts:['Распустить про него слухи'], v:false},
+
+ {id:'u15', code:'УК', num:'153 ч.1', title:'Умышленное причинение лёгкого телесного повреждения', sev:2, cat:'Здоровье', kind:'restr', min:0.25, max:1, sanction:'Общественные работы, штраф, исправительные работы или арест', acts:['Отлупить степлером'], v:false},
+ {id:'u11', code:'УК', num:'149 ч.1', title:'Умышленное причинение менее тяжкого телесного повреждения', sev:3, cat:'Здоровье', kind:'prison', min:0.25, max:3, sanction:'Штраф, исправительные работы до 2 лет, арест, ограничение или лишение свободы до 3 лет', acts:['Поставить ему фингал','Выбить зуб'], v:true},
+ {id:'u12', code:'УК', num:'147 ч.1', title:'Умышленное причинение тяжкого телесного повреждения', sev:4, cat:'Здоровье', kind:'prison', min:4, max:8, affect:'u13', sanction:'Ограничение свободы от 3 до 5 лет или лишение свободы от 4 до 8 лет', acts:['Покалечить','Сломать ему руку','Сломать ему ногу'], v:true},
+ {id:'u13', code:'УК', num:'155', title:'Тяжкое телесное повреждение в состоянии аффекта', sev:2, cat:'Здоровье', kind:'restr', min:0.25, max:2, aff:true, sanction:'Общественные работы, исправительные работы, арест или ограничение свободы', acts:[], v:false},
+ {id:'u14', code:'УК', num:'154 ч.1', title:'Истязание', sev:3, cat:'Здоровье', kind:'prison', min:0.25, max:3, sanction:'Арест, ограничение или лишение свободы до 3 лет', acts:['Мучить его отчётами до утра'], v:false},
+
+ {id:'u16', code:'УК', num:'183 ч.1', title:'Незаконное лишение свободы', sev:3, cat:'Свобода', kind:'prison', min:0.25, max:3, sanction:'Штраф, арест, ограничение или лишение свободы до 3 лет', acts:['Запереть его в архиве','Закрыть в переговорке на выходные'], v:false},
+ {id:'u17', code:'УК', num:'182 ч.1', title:'Похищение человека', sev:4, cat:'Свобода', kind:'prison', min:5, max:7, sanction:'Лишение свободы от 5 до 7 лет', acts:['Увезти в лес','Вывезти за МКАД'], v:true},
+ {id:'u18', code:'УК', num:'291 ч.1', title:'Захват заложника', sev:4, cat:'Свобода', kind:'prison', min:5, max:10, sanction:'Лишение свободы от 5 до 10 лет', acts:['Взять в заложники до конца квартала'], v:false},
+ {id:'u19', code:'УК', num:'207 ч.1', title:'Разбой', sev:4, cat:'Свобода', kind:'prison', min:3, max:10, sanction:'Лишение свободы от 3 до 10 лет', acts:['Ограбить с дыроколом в руке'], v:false},
+
+ {id:'u20', code:'УК', num:'139 ч.1', title:'Убийство', sev:5, cat:'Тяжкие', kind:'prison', min:6, max:15, affect:'u22', sanction:'Лишение свободы от 6 до 15 лет', acts:['Убрать','Прибить'], v:false},
+ {id:'u21', code:'УК', num:'139 ч.2', title:'Убийство при отягчающих обстоятельствах', sev:5, cat:'Тяжкие', kind:'prison', min:8, max:25, lifeDeath:true, affect:'u22', sanction:'Лишение свободы от 8 до 25 лет, или пожизненное лишение свободы, или смертная казнь', acts:['Расчленить','Сжечь','Утопить','Придушить','Закопать'], v:true},
+ {id:'u22', code:'УК', num:'141', title:'Убийство в состоянии аффекта', sev:3, cat:'Тяжкие', kind:'prison', min:0.25, max:5, aff:true, sanction:'Ограничение или лишение свободы до 5 лет', acts:['Убить в состоянии аффекта'], v:false},
+
+ {id:'c1', code:'Свой', num:'КС-1', title:'Кодекс секретаря', sev:1, cat:'Кодекс секретаря', kind:'fine', min:5, max:5, sanction:'Штраф 5 БВ (выдуманная санкция)', acts:['Подписать через неделю'], v:true},
+ {id:'c2', code:'Свой', num:'КС-2', title:'Кодекс секретаря', sev:1, cat:'Кодекс секретаря', kind:'arrestAdm', min:3, max:3, sanction:'Административный арест 3 суток (выдуманная санкция)', acts:['Вынести его вещи в коридор'], v:true},
+ {id:'c3', code:'Свой', num:'КС-3', title:'Кодекс секретаря', sev:2, cat:'Кодекс секретаря', kind:'hours', min:40, max:40, sanction:'Общественные работы 40 часов (выдуманная санкция)', acts:['Устроить экзамен по ЛПА при всех'], v:true},
+ {id:'c4', code:'Свой', num:'КС-4', title:'Кодекс секретаря', sev:2, cat:'Кодекс секретаря', kind:'restr', min:0.5, max:0.5, sanction:'Ограничение свободы 6 месяцев (выдуманная санкция)', acts:['Написать служебку председателю'], v:true}
+];
+const CATS = ['Административка','Имущество','Хулиганство и угрозы','Здоровье','Свобода','Тяжкие','Кодекс секретаря'];
+const TAGS = ['срочно подписать','вещи на мой стол','не знает ЛПА','превысил полномочия','наорал','нахамил','сорвал сроки','проигнорил'];
+const FORGIVE_TAGS = ['извинился','принёс кофе','шоколадка','настроение хорошее','сам всё понял'];
+const RULES = {max:'Суд строгий (максимум)', mid:'Средне (середина вилки)', min:'Суд добрый (минимум)', rnd:'Как повезёт (случайно)'};
+const KIND_LABEL = {prison:'лишение свободы', restr:'ограничение свободы', fine:'штраф', arrestAdm:'адм. арест', hours:'общественные работы'};
+
+/* ================= ХРАНЕНИЕ ================= */
+const KEY = 'zonakomforta.v1';
+let memOnly = false;
+function blank(){ return {v:1, profile:null, people:[], eps:[], custom:[], settings:{bv:45, rule:'max', blur:true, initials:true, lastBackup:null, sound:true}, ach:{}}; }
+function load(){
+  try { const r = localStorage.getItem(KEY); if (r) { const d = JSON.parse(r); return Object.assign(blank(), d, {settings:Object.assign(blank().settings, d.settings||{})}); } }
+  catch(e){ memOnly = true; }
+  return blank();
+}
+let S = load();
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); memOnly = false; } catch(e){ memOnly = true; } }
+const uid = () => Math.random().toString(36).slice(2,9) + Date.now().toString(36).slice(-4);
+function allCat(){ return CAT.concat(S.custom||[]); }
+function art(id){ return allCat().find(a => a.id === id); }
+function person(id){ return S.people.find(p => p.id === id); }
+function liveEps(){ return S.eps.filter(e => !e.deletedAt); }
+function sentenced(){ return liveEps().filter(e => e.artId); }
+function purgeTrash(){ const lim = Date.now() - 7*864e5; S.eps = S.eps.filter(e => !e.deletedAt || new Date(e.deletedAt).getTime() > lim); }
+purgeTrash();
+
+/* ================= УТИЛИТЫ ================= */
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function plural(n, f){ n = Math.abs(Math.floor(n)); const a = n%100, b = n%10; if (a>10&&a<20) return f[2]; if (b===1) return f[0]; if (b>1&&b<5) return f[1]; return f[2]; }
+const Y = ['год','года','лет'], M = ['месяц','месяца','месяцев'], D = ['день','дня','дней'], EPS = ['эпизод','эпизода','эпизодов'];
+function splitYM(y){ let yy = Math.floor(y+1e-9), mm = Math.round((y-yy)*12); if (mm===12){yy++;mm=0;} return [yy,mm]; }
+function fmtY(y, short){
+  if (!y) return '0 лет';
+  const [yy,mm] = splitYM(y);
+  const p = [];
+  if (yy) p.push(yy+' '+plural(yy,Y));
+  if (mm) p.push(mm+' '+(short?'мес.':plural(mm,M)));
+  return p.join(' ') || '0 лет';
+}
+function fmtBV(n){ return (Math.round(n*10)/10).toString().replace('.',',')+' БВ'; }
+function fmtRub(bv){ return Math.round(bv*S.settings.bv).toLocaleString('ru-RU').replace(/,/g,' ')+' BYN'; }
+function shortName(p){ if (!p) return '—'; if (!S.settings.initials) return p.name; const w = p.name.trim().split(/\s+/); return w.length>1 ? w.map(x=>x[0].toUpperCase()+'.').join(' ') : w[0]; }
+function ini(p){ if (!p) return '?'; const w = p.name.trim().split(/\s+/); return (w[0][0] + (w[1]?w[1][0]:'')).toUpperCase(); }
+function dt(iso){ const d = new Date(iso), n = new Date(); const t = d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+  if (d.toDateString()===n.toDateString()) return 'сегодня, '+t;
+  const y = new Date(n); y.setDate(n.getDate()-1); if (d.toDateString()===y.toDateString()) return 'вчера, '+t;
+  return d.toLocaleDateString('ru-RU',{day:'numeric',month:'short'})+', '+t; }
+
+/* ================= ПОДСЧЁТ ================= */
+function pick(a, rule){
+  if (a.min === a.max) return a.max;
+  let v;
+  if (rule==='min') v = a.min; else if (rule==='mid') v = (a.min+a.max)/2; else if (rule==='rnd') v = a.min + Math.random()*(a.max-a.min); else v = a.max;
+  if (a.kind==='prison'||a.kind==='restr') v = Math.round(v*12)/12; else v = Math.round(v);
+  return v;
+}
+// эффективное значение эпизода с учётом помилования
+function eff(e){ const k = e.forgiven==='full' ? 0 : e.forgiven==='half' ? 0.5 : 1; return {kind:e.kind, val:(e.val||0)*k}; }
+function totals(eps){
+  const t = {prison:0, restr:0, fine:0, arrestAdm:0, hours:0, lifeDeath:0, n:0};
+  eps.forEach(e => { if (!e.artId) return; t.n++; const x = eff(e); t[x.kind] += x.val; if (e.lifeDeath && e.forgiven!=='full') t.lifeDeath++; });
+  return t;
+}
+function served(eps){ // отбыто (только лишение свободы), годы
+  const now = Date.now(); let s = 0;
+  eps.forEach(e => { if (!e.artId) return; const x = eff(e); if (x.kind!=='prison') return; const pass = (now - new Date(e.date).getTime())/(365.25*864e5); s += Math.min(pass, x.val); });
+  return s;
+}
+function releasedCount(){ const now = Date.now(); return sentenced().filter(e => { const x = eff(e); return x.kind==='prison' && x.val>0 && (now-new Date(e.date).getTime())/(365.25*864e5) >= x.val; }).length; }
+function monthEps(offset){ const n = new Date(); const y = n.getFullYear(), m = n.getMonth()+offset; const s = new Date(y,m,1).getTime(), f = new Date(y,m+1,1).getTime(); return sentenced().filter(e => { const t = new Date(e.date).getTime(); return t>=s && t<f; }); }
+function valueLine(kind, v){ if (kind==='prison'||kind==='restr') return fmtY(v,true); if (kind==='fine') return fmtBV(v); if (kind==='arrestAdm') return v+' '+plural(v,['сутки','суток','суток']); return v+' ч.'; }
+function plusLine(e){ const x = eff(e); return (x.val? '+':'') + valueLine(x.kind, x.val) + (x.kind==='restr'?' огр.':''); }
+function setVerdict(e, a){
+  e.artId = a.id; e.kind = a.kind; e.val = pick(a, S.settings.rule); e.lifeDeath = !!a.lifeDeath && S.profile && S.profile.sex==='f' ? true : false;
+  e.lifeDeathMale = !!a.lifeDeath && S.profile && S.profile.sex==='m';
+  e.rule = S.settings.rule;
+}
+
+/* ================= ДОСТИЖЕНИЯ ================= */
+const ACH = [
+  {id:'first', t:'Первый срок', d:'Первый приговор вступил в силу', ok:()=>sentenced().length>=1},
+  {id:'heavy', t:'Тяжёлый день', d:'Три эпизода за один день', ok:()=>{ const c={}; sentenced().forEach(e=>{const k=new Date(e.date).toDateString(); c[k]=(c[k]||0)+1;}); return Object.values(c).some(v=>v>=3); }},
+  {id:'variety', t:'Широкий профиль', d:'Опробовала 10 разных статей', ok:()=>new Set(sentenced().map(e=>e.artId)).size>=10},
+  {id:'hundred', t:'Сотка', d:'Набежало 100 лет', ok:()=>totals(sentenced()).prison>=100},
+  {id:'tereza', t:'Мать Тереза', d:'Простила три раза', ok:()=>sentenced().filter(e=>e.forgiven).length>=3},
+  {id:'free', t:'Вышел на свободу', d:'Кто-то отсидел своё до конца', ok:()=>releasedCount()>=1},
+  {id:'quiet', t:'Неделя без укусов', d:'7 дней без единого эпизода', ok:()=>{ const s=liveEps(); if(!s.length) return false; const last=Math.max(...s.map(e=>new Date(e.date).getTime())); return Date.now()-last>=7*864e5; }}
+];
+function checkAch(){ let got = null; ACH.forEach(a => { if (!S.ach[a.id] && a.ok()) { S.ach[a.id] = new Date().toISOString(); got = a; } }); if (got){ save(); setTimeout(()=>toast('Достижение: «'+got.t+'»'), 1600); } }
+
+/* ================= ЗВУК ================= */
+function gavelSound(){
+  if (!S.settings.sound) return;
+  try {
+    const C = window.AudioContext||window.webkitAudioContext; if (!C) return; const c = new C();
+    const hit = (t) => { const o=c.createOscillator(), g=c.createGain(); o.type='sine'; o.frequency.setValueAtTime(180,t); o.frequency.exponentialRampToValueAtTime(55,t+.18); g.gain.setValueAtTime(.9,t); g.gain.exponentialRampToValueAtTime(.001,t+.25); o.connect(g).connect(c.destination); o.start(t); o.stop(t+.26);
+      const b=c.createBuffer(1, c.sampleRate*.05, c.sampleRate), d=b.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*(1-i/d.length); const n=c.createBufferSource(), ng=c.createGain(); ng.gain.value=.35; n.buffer=b; n.connect(ng).connect(c.destination); n.start(t); };
+    hit(c.currentTime+.3); hit(c.currentTime+.62);
+    if (navigator.vibrate) navigator.vibrate([30,280,30]);
+  } catch(e){}
+}
+
+/* ================= ИКОНКИ ================= */
+const I = {
+  x:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  back:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>',
+  chev:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9A9DA6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>',
+  gear:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3 1a7 7 0 0 0-2-1.2L14.2 3h-4l-.4 2.6a7 7 0 0 0-2 1.2l-2.3-1-2 3.4 2 1.5a7 7 0 0 0 0 2.4l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 2 1.2l.4 2.6h4l.4-2.6a7 7 0 0 0 2-1.2l2.3 1 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z"/></svg>',
+  doc:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h10l6 6v10H4z"/><path d="M14 4v6h6"/></svg>',
+  ppl:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7"/><path d="M18 14.8c2 .7 3.2 2.5 3.5 5.2"/></svg>',
+  plus:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
+  stat:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 20V11M12 20V5M19 20v-6"/></svg>',
+  heart:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>',
+  gavel:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 3.5l7 7M10 7l7 7M11.8 5.2l-6.6 6.6 3.5 3.5 6.6-6.6M7 14l-4.5 4.5 3 3L10 17M14 20h7"/></svg>',
+  search:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>',
+  star:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>',
+  share:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5M5 14v6h14v-6"/></svg>'
+};
+
+/* ================= РОУТИНГ / СОСТОЯНИЕ ================= */
+let R = {name:'home', p:{}}; let locked = false; let F = null; let hiddenAt = 0; let pinBuf = '';
+const app = document.getElementById('app'), navHost = document.getElementById('navHost');
+function go(name, p){ R = {name, p:p||{}}; render(); window.scrollTo(0,0); }
+function toast(t){ const d = document.createElement('div'); d.className='toast'; d.textContent=t; document.body.appendChild(d); setTimeout(()=>d.remove(), 2600); }
+const TABS = [['home','Дело',I.doc],['people','Обидчики',I.ppl],['new','',I.plus],['stats','Статистика',I.stat],['amnesty','Амнистия',I.heart]];
+function nav(cur){ return '<nav class="tab">'+TABS.map(([n,l,ic]) => n==='new' ? '<button class="plus" data-a="newQuick" aria-label="Меня довели">'+ic+'</button>' : '<button class="'+(cur===n?'on':'')+'" data-a="go" data-to="'+n+'">'+ic+l+'</button>').join('')+'</nav>'; }
+function render(){
+  checkAch();
+  let html, withNav = false;
+  if (!S.profile) html = V.onboarding();
+  else if (locked) html = V.lock();
+  else { const v = V[R.name] || V.home; html = v(R.p); withNav = ['home','people','stats','amnesty'].includes(R.name); }
+  app.innerHTML = (memOnly ? '<div class="card small" style="margin-bottom:12px;border-color:#ff8a7a">Хранилище недоступно — данные не сохранятся после закрытия. Открой приложение с экрана «Домой».</div>' : '') + html;
+  app.classList.toggle('noNav', !withNav);
+  navHost.innerHTML = withNav ? nav(R.name) : '';
+  if (V[R.name+'After']) V[R.name+'After'](R.p);
+}
+
+/* ================= ЭКРАНЫ ================= */
+const V = {};
+
+V.onboarding = () => {
+  F = F && F.onb ? F : {onb:true, name:'', sex:'f', pin:''};
+  return `
+  <div style="padding-top:12px"><span class="stamp" style="transform:none">ПОВЕСТКА № 001</span></div>
+  <div class="h1" style="font-size:30px;margin-top:16px">Ты вызываешься в&nbsp;Зону комфорта</div>
+  <p class="soft" style="font-size:15px;line-height:1.5">Сюда записываешь всех, кто тебя довёл, и узнаёшь, сколько бы тебе за это дали по настоящим УК и КоАП. Скорпиону можно.</p>
+  <div class="lbl">Как тебя записать в деле</div>
+  <input class="field" data-f="name" placeholder="Имя, фамилия или кличка — как хочешь" value="${esc(F.name)}" autocomplete="off">
+  <div class="lbl">Знак зодиака</div>
+  <div class="field between" style="display:flex"><b>Скорпион</b><span class="xs muted">не обсуждается</span></div>
+  <div class="lbl">Подсудимая</div>
+  <div class="seg" style="grid-template-columns:1fr 1fr"><button class="${F.sex==='f'?'on':''}" data-a="onbSex" data-v="f">Женщина</button><button class="${F.sex==='m'?'on':''}" data-a="onbSex" data-v="m">Мужчина</button></div>
+  <div class="xs muted" style="margin-top:6px">Влияет на приговор: женщинам не назначают пожизненное и смертную казнь.</div>
+  <div class="lbl">Придумай PIN из 4 цифр</div>
+  <input class="field" data-f="pin" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="••••" value="${esc(F.pin)}" style="letter-spacing:12px;font-family:'Unbounded',sans-serif">
+  <div style="margin-top:22px;display:flex;flex-direction:column;gap:8px" class="small soft">
+    <div class="row" style="align-items:flex-start;gap:10px"><b class="acc">1</b><span>Всё хранится только на этом телефоне. Никаких серверов.</span></div>
+    <div class="row" style="align-items:flex-start;gap:10px"><b class="acc">2</b><span>Снаружи видны только инициалы, полные имена — внутри.</span></div>
+    <div class="row" style="align-items:flex-start;gap:10px"><b class="acc">3</b><span>Раз в месяц сохраняй копию дела — приложение напомнит.</span></div>
+  </div>
+  <div style="margin-top:26px"><button class="btn" data-a="onbDone">Принять повестку</button></div>`;
+};
+
+V.lock = () => `
+  <div style="padding-top:60px;text-align:center">
+    <div class="mono">ДЕЛО № 2026/001</div>
+    <div class="h1" style="margin-top:8px">Зона комфорта</div>
+    <div class="muted small" style="margin-top:8px">Введи PIN</div>
+    <div class="pindots">${[0,1,2,3].map(i=>'<i class="'+(i<pinBuf.length?'on':'')+'"></i>').join('')}</div>
+    <div class="pin">${[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(k => k==='' ? '<span></span>' : '<button data-a="pinKey" data-k="'+k+'" aria-label="'+(k==='⌫'?'Стереть':k)+'">'+k+'</button>').join('')}</div>
+  </div>`;
+
+V.home = () => {
+  const eps = sentenced(), t = totals(eps), sv = served(eps);
+  const cur = totals(monthEps(0)), prev = totals(monthEps(-1));
+  let diff = '';
+  if (prev.prison>0){ const d = Math.round((cur.prison-prev.prison)/prev.prison*100); diff = d>=0 ? 'злее на '+d+'%' : 'добрее на '+(-d)+'%'; }
+  const drafts = liveEps().filter(e=>!e.artId).length;
+  const mName = new Date().toLocaleDateString('ru-RU',{month:'long'}); const mCap = mName[0].toUpperCase()+mName.slice(1);
+  // главный доводящий месяца
+  const cnt = {}; monthEps(0).forEach(e=>{cnt[e.personId]=(cnt[e.personId]||0)+1;});
+  let topId = Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0]; const top = person(topId);
+  const topYears = top ? totals(sentenced().filter(e=>e.personId===topId)).prison : 0;
+  const recent = liveEps().filter(e=>e.artId).sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,3);
+  const [yy,mm] = splitYM(t.prison);
+  const demo = S.people.some(p=>p.demo);
+  const backupDays = S.settings.lastBackup ? Math.floor((Date.now()-new Date(S.settings.lastBackup))/864e5) : null;
+  const needBackup = eps.length >= 3 && (backupDays===null || backupDays>30);
+  return `
+  <div class="top">
+    <div><div class="mono">Дело № 2026/001 · знак: скорпион</div><div class="h2" style="margin-top:2px">Зона комфорта</div></div>
+    <button class="iconBtn" data-a="go" data-to="settings" aria-label="Настройки">${I.gear}</button>
+  </div>
+  ${demo ? `<button class="banner" data-a="delDemo"><div class="grow"><b>Это демо-дело</b><div class="xs muted">Показывает, как всё работает. Нажми, чтобы удалить и начать по-настоящему</div></div>${I.x}</button>`:''}
+  ${needBackup ? `<button class="banner" data-a="go" data-to="settings"><div class="grow"><b>${backupDays===null?'Копии дела ещё нет':'Последняя копия — '+backupDays+' '+plural(backupDays,D)+' назад'}</b><div class="xs muted">Сменишь телефон без копии — всё пропадёт</div></div>${I.chev}</button>`:''}
+  <div class="card" style="margin-top:16px;padding:20px;border-radius:24px">
+    <div class="between"><div class="xs" style="font-weight:600;letter-spacing:1px;color:var(--muted)">МНЕ СВЕТИТ</div><div class="xs muted">${sv>=1/12?'отбыто '+fmtY(sv,true):sv*365.25>=1?'отбыто '+Math.floor(sv*365.25)+' '+plural(Math.floor(sv*365.25),D):''}</div></div>
+    <div class="row" style="align-items:baseline;gap:10px;margin-top:10px">
+      <div class="num acc" style="font-weight:800;font-size:${yy>=1000?60:84}px;line-height:.9">${yy}</div>
+      <div class="num" style="font-weight:500;font-size:18px;line-height:1.2">${plural(yy,Y)}${mm?'<br>'+mm+' мес.':''}</div>
+    </div>
+    ${(t.restr||t.arrestAdm||t.hours) ? `<div class="small soft" style="margin-top:10px">${[t.restr?'ограничение свободы '+fmtY(t.restr,true):'', t.arrestAdm?t.arrestAdm+' '+plural(t.arrestAdm,['сутки','суток','суток'])+' ареста':'', t.hours?t.hours+' ч. общественных работ':''].filter(Boolean).join(' · ')}</div>`:''}
+    <div class="small soft" style="margin-top:8px">${S.profile.sex==='f' ? 'Пожизненное и вышка тебе не светят — ты женщина. Максимум 25 лет за эпизод.' : 'Внимание: тебе светит и пожизненное, и вышка.'}</div>
+    <div style="height:1px;background:var(--line);margin:14px 0 12px"></div>
+    <div class="grid2 small">
+      <div><div class="muted">${mCap}</div><div style="font-weight:700;font-size:15px">+${fmtY(cur.prison,true)} ${diff?'<span class="acc xs" style="font-weight:600">'+diff+'</span>':''}</div></div>
+      <div><div class="muted">Штрафы</div><div style="font-weight:700;font-size:15px">${fmtBV(t.fine)} · ${fmtRub(t.fine)}</div></div>
+    </div>
+  </div>
+  ${drafts ? `<button class="banner" data-a="go" data-to="drafts"><div class="av on" style="width:36px;height:36px;font-size:14px;background:var(--accDark);color:var(--acc)">${drafts}</div><div class="grow"><b>${plural(drafts,['Дело ждёт','Дела ждут','Дел ждут'])} приговора</b><div class="xs muted">Заведены на бегу — реши, что с ними делать</div></div>${I.chev}</button>`:''}
+  ${top ? `<div class="lbl">Главный доводящий ${new Date().toLocaleDateString('ru-RU',{month:'long'}).replace(/ь$/,'я').replace(/й$/,'я').replace(/т$/,'та')}</div>
+  <button class="card row" style="width:100%;text-align:left" data-a="go" data-to="person" data-id="${top.id}"><div class="av on">${esc(ini(top))}</div><div class="grow"><div style="font-weight:700;font-size:16px">${esc(shortName(top))}</div><div class="small muted">${cnt[topId]} ${plural(cnt[topId],['укус','укуса','укусов'])} за месяц · стоил тебе ${fmtY(topYears,true)}</div></div>${I.chev}</button>`:''}
+  <div class="lbl">Последние эпизоды</div>
+  ${recent.length ? '<div class="list">'+recent.map(epRow).join('')+'</div>' : '<div class="empty">Пока никто не довёл. Подозрительно спокойно.<br>Жми <b class="acc">+</b>, когда начнётся.</div>'}`;
+};
+function epRow(e){
+  const a = art(e.artId), p = person(e.personId);
+  return `<button class="it between" style="width:100%;background:none;border:0;border-bottom:1px solid var(--card2);text-align:left;padding:11px 0" data-a="go" data-to="verdict" data-id="${e.id}">
+    <div class="grow"><div style="font-weight:600;font-size:15px" class="${e.forgiven==='full'?'strike':''}">${esc(shortName(p))}${e.tags&&e.tags[0]?' · '+esc(e.tags[0]):''}</div><div class="small muted" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">«${esc(e.action||'')}» · ${a?(a.code==='Свой'?'Кодекс секретаря':'ст. '+a.num+' '+a.code):''}${e.forgiven?' · '+(e.forgiven==='full'?'помилован':'смягчено'):''}</div></div>
+    <div class="num ${e.kind==='prison'&&e.forgiven!=='full'?'acc':''}" style="font-size:14px;white-space:nowrap">${plusLine(e)}</div></button>`;
+}
+
+V.people = () => {
+  F = F && F.ppl ? F : {ppl:true, q:'', sort:'eps', adding:false, newName:'', newRole:''};
+  const eps = sentenced();
+  let rows = S.people.filter(p=>!p.demo || true).map(p => { const pe = eps.filter(e=>e.personId===p.id); const t = totals(pe); const last = pe.length ? Math.max(...pe.map(e=>new Date(e.date).getTime())) : new Date(p.created).getTime(); return {p, n:pe.length, y:t.prison, fine:t.fine, last, forgiven:pe.filter(e=>e.forgiven).length}; });
+  if (F.q) rows = rows.filter(r => r.p.name.toLowerCase().includes(F.q.toLowerCase()));
+  rows.sort((a,b) => F.sort==='eps' ? b.n-a.n || b.y-a.y : F.sort==='years' ? b.y-a.y : b.last-a.last);
+  const maxN = Math.max(1, ...rows.map(r=>r.n)); const totalEps = eps.length;
+  return `
+  <div class="top"><div><div class="mono">${S.people.length} ${plural(S.people.length,['человек','человека','человек'])} · ${totalEps} ${plural(totalEps,EPS)}</div><div class="h1">Обидчики</div></div>
+  <button class="chip on" style="height:44px" data-a="pplAdd">+ Добавить</button></div>
+  ${F.adding ? `<div class="card" style="margin-top:14px;display:flex;flex-direction:column;gap:8px"><input class="field" data-f="newName" placeholder="Имя, как ты его зовёшь" value="${esc(F.newName)}" autocomplete="off"><input class="field" data-f="newRole" placeholder="Отдел или должность (необязательно)" value="${esc(F.newRole)}" autocomplete="off"><div class="grid2"><button class="btn2" data-a="pplAddCancel">Отмена</button><button class="btn" style="height:46px" data-a="pplAddSave">Внести в дело</button></div></div>`:''}
+  <label class="field row" style="margin-top:14px;color:var(--muted)">${I.search}<input data-f="q" placeholder="Найти по имени" value="${esc(F.q)}" style="flex:1;background:none;border:0;outline:none;font-size:15px;color:var(--text)" autocomplete="off"></label>
+  <div class="wrap" style="margin-top:12px">${[['eps','По эпизодам'],['years','По сроку'],['fresh','Свежие']].map(([k,l])=>'<button class="chip '+(F.sort===k?'on':'')+'" style="height:36px;font-size:13px" data-a="pplSort" data-v="'+k+'">'+l+'</button>').join('')}</div>
+  <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+  ${rows.length ? rows.map((r,i) => `<button class="card" style="text-align:left;display:flex;flex-direction:column;gap:10px" data-a="go" data-to="person" data-id="${r.p.id}">
+    <div class="row" style="width:100%"><div class="av ${i===0&&r.n&&F.sort==='eps'?'on':''}">${esc(ini(r.p))}</div>
+    <div class="grow"><div style="font-weight:700;font-size:15px">${esc(r.p.name)} ${r.n>=3?'<span class="badge">УЖАЛЕН '+r.n+' '+plural(r.n,['РАЗ','РАЗА','РАЗ'])+'</span>':''}</div><div class="xs muted">${esc(r.p.role||'')}</div></div>
+    <div style="text-align:right"><div class="num" style="font-size:15px">${r.y?fmtY(r.y,true):r.fine?fmtBV(r.fine):'—'}</div><div class="xs muted">${r.n} ${plural(r.n,EPS)}</div></div></div>
+    <div class="bar" style="width:100%"><div style="width:${Math.round(r.n/maxN*100)}%"></div></div></button>`).join('') : '<div class="empty">'+(F.q?'Никого с таким именем.':'Пока никого. Добавь первого — или сразу жми <b class="acc">+</b>, когда кто-то доведёт.')+'</div>'}
+  </div>`;
+};
+
+V.person = (p) => {
+  const pr = person(p.id); if (!pr) return V.people();
+  const pe = liveEps().filter(e=>e.personId===pr.id).sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const sent = pe.filter(e=>e.artId); const t = totals(sent); const fg = sent.filter(e=>e.forgiven).length;
+  const tagC = {}; sent.forEach(e=>(e.tags||[]).forEach(x=>tagC[x]=(tagC[x]||0)+1)); const fav = Object.keys(tagC).sort((a,b)=>tagC[b]-tagC[a])[0];
+  return `
+  <div class="top"><button class="iconBtn" data-a="go" data-to="people" aria-label="Назад">${I.back}</button><div class="row" style="gap:8px"><button class="chip" style="height:40px" data-a="renamePerson" data-id="${pr.id}">Переименовать</button></div></div>
+  <div class="row" style="margin-top:18px"><div class="av on" style="width:56px;height:56px;border-radius:28px;font-size:18px">${esc(ini(pr))}</div><div class="grow"><div class="mono">Эпизоды по делу</div><div class="h1" style="font-size:22px">${esc(pr.name)}</div><div class="xs muted">${esc(pr.role||'')}</div></div></div>
+  <div class="card" style="margin-top:16px">
+    <div class="small muted">Он того стоил?</div>
+    <div style="font-weight:700;font-size:16px;margin-top:4px">${esc(pr.name.split(' ')[0])} обошёлся тебе в ${fmtY(t.prison)}${t.fine?' и '+fmtRub(t.fine):''}</div>
+    <div class="grid3" style="margin-top:12px"><div><div class="num" style="font-size:18px">${sent.length}</div><div class="xs muted">${plural(sent.length,['укус','укуса','укусов'])}</div></div><div><div class="num" style="font-size:18px">${fg}</div><div class="xs muted">прощено</div></div><div><div style="font-size:14px;font-weight:700;line-height:1.25;min-height:22px">${fav?esc(fav):'—'}</div><div class="xs muted">любимый грех</div></div></div>
+  </div>
+  <button class="btn" style="margin-top:12px" data-a="newFor" data-id="${pr.id}">${I.plus} Новый эпизод</button>
+  <div class="lbl">Лента</div>
+  ${pe.length ? '<div class="list">'+pe.map(e => e.artId ? epRow(e) : `<button class="it between" style="width:100%;background:none;border:0;border-bottom:1px solid var(--card2);text-align:left;padding:11px 0" data-a="sentenceDraft" data-id="${e.id}"><div class="grow"><div style="font-weight:600">Черновик · ${dt(e.date)}</div><div class="small muted">${esc(e.desc||'без описания')}</div></div><span class="badge">ВЫНЕСТИ</span></button>`).join('')+'</div>' : '<div class="empty">Эпизодов нет. Пока.</div>'}
+  <button class="link" style="margin-top:24px;color:#ff8a7a" data-a="delPerson" data-id="${pr.id}">Удалить дело целиком</button>`;
+};
+
+V.new = (p) => {
+  // p.draftId — выносим приговор по черновику; p.personId — заранее выбран человек
+  if (!F || !F.ep || F.key !== (p.draftId||p.personId||'new')) {
+    const d = p.draftId ? S.eps.find(e=>e.id===p.draftId) : null;
+    const lastP = sentenced().sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
+    F = {ep:true, key:p.draftId||p.personId||'new', draftId:p.draftId||null, personId: d?d.personId:(p.personId||(lastP?lastP.personId:null)), newName:'', adding:false, desc:d?d.desc:'', tags:new Set(d?d.tags:[]), artId:null, action:null, q:'', cat:null};
+  }
+  const people = S.people.slice().sort((a,b)=>{ const la = Math.max(0,...sentenced().filter(e=>e.personId===a.id).map(e=>new Date(e.date).getTime())); const lb = Math.max(0,...sentenced().filter(e=>e.personId===b.id).map(e=>new Date(e.date).getTime())); return lb-la; });
+  const acts = actionList(F.q, F.cat);
+  return `
+  <div class="top"><button class="iconBtn" data-a="cancelNew" aria-label="Закрыть">${I.x}</button><div class="mono">${F.draftId?'Приговор по черновику':'Новый эпизод'}</div><div style="width:44px"></div></div>
+  <div class="lbl">1 · Кто довёл</div>
+  <div class="wrap">${people.map(x=>'<button class="chip '+(F.personId===x.id?'on':'')+'" data-a="pickPerson" data-id="'+x.id+'">'+esc(x.name)+'</button>').join('')}<button class="chip dash" data-a="addInline">+ Новый</button></div>
+  ${F.adding ? `<div class="row" style="margin-top:10px"><input class="field" data-f="newName" placeholder="Имя" value="${esc(F.newName)}" autocomplete="off"><button class="chip on" style="height:50px" data-a="addInlineSave">ОК</button></div>`:''}
+  <div class="lbl">2 · Как довёл</div>
+  <label class="card" style="display:flex;flex-direction:column;gap:6px;padding:12px 14px">
+    <span class="xs muted">Коротко, чтобы потом вспомнить</span>
+    <textarea data-f="desc" rows="3" maxlength="200" placeholder="Что случилось? Можно надиктовать — микрофон на клавиатуре" style="background:none;border:0;outline:none;resize:none;font-size:15px;line-height:1.4;padding:0">${esc(F.desc)}</textarea>
+    <span class="xs" style="align-self:flex-end;color:var(--dim);font-family:'PT Mono',monospace" id="cnt">${F.desc.length} / 200</span>
+  </label>
+  <div class="wrap" style="margin-top:10px">${TAGS.map(t=>'<button class="tag '+(F.tags.has(t)?'on':'')+'" data-a="tag" data-v="'+esc(t)+'">'+esc(t)+'</button>').join('')}</div>
+  <div class="lbl between" style="display:flex"><span>3 · Что ты с ним сделала</span><button class="link" style="width:auto;padding:0;color:var(--text);text-decoration:underline;text-transform:none;letter-spacing:0" data-a="randomAct">Ужалить наугад</button></div>
+  <label class="field row" style="color:var(--muted)">${I.search}<input data-f="q" placeholder="«сжечь», «придушить», «кружку»…" value="${esc(F.q)}" style="flex:1;background:none;border:0;outline:none;font-size:15px;color:var(--text)" autocomplete="off"></label>
+  <div style="display:flex;gap:8px;overflow-x:auto;margin:10px -20px 0;padding:0 20px 4px;scrollbar-width:none">${['Все'].concat(CATS).map(c=>'<button class="chip '+((F.cat||'Все')===c?'on':'')+'" style="height:34px;font-size:13px;flex-shrink:0" data-a="cat" data-v="'+c+'">'+c+'</button>').join('')}</div>
+  <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px" id="acts">${actsHtml(acts)}</div>
+  <div style="position:sticky;bottom:calc(var(--sb) + 12px);margin-top:16px"><button class="btn" data-a="sentence" ${F.personId&&F.artId?'':'disabled'}>${I.gavel} Вынести приговор</button></div>
+  ${!F.draftId ? '<button class="link" data-a="saveDraft">Сохранить без приговора — решу потом</button>':''}`;
+};
+function actionList(q, cat){
+  const res = [];
+  allCat().forEach(a => { if (a.aff) return; if (cat && cat!=='Все' && a.cat!==cat) return; (a.acts||[]).forEach(n => res.push({a, n})); });
+  if (!q) return res;
+  const s = q.toLowerCase().trim();
+  return res.filter(r => (r.n+' '+r.a.title+' '+r.a.num).toLowerCase().includes(s));
+}
+function actsHtml(acts){
+  if (!acts.length) return '<div class="empty">Ничего не нашлось. Попробуй другое слово — или добавь свою статью в «Кодексе секретаря» (настройки).</div>';
+  return acts.map(r => { const on = F.artId===r.a.id && F.action===r.n; return `<button class="act ${on?'on':''}" data-a="pickAct" data-id="${r.a.id}" data-n="${esc(r.n)}">
+    <div class="between" style="width:100%"><b style="font-size:16px">${esc(r.n)}</b><span class="xs" style="font-family:'PT Mono',monospace;color:var(--muted);white-space:nowrap">${r.a.code==='Свой'?'свой':'ст. '+esc(r.a.num)+' '+r.a.code}</span></div>
+    <div class="small soft" style="line-height:1.35">${esc(r.a.sanction)}</div>
+    <div class="dots">${[1,2,3,4,5].map(i=>'<i class="'+(i<=r.a.sev?'on':'')+'"></i>').join('')}</div></button>`; }).join('');
+}
+
+V.drafts = () => {
+  F = F && F.dr ? F : {dr:true, personId:null, adding:false, newName:'', desc:''};
+  const list = liveEps().filter(e=>!e.artId).sort((a,b)=>new Date(b.date)-new Date(a.date));
+  return `
+  <div class="top"><button class="iconBtn" data-a="go" data-to="home" aria-label="Закрыть">${I.x}</button><div class="mono">Дело на бегу</div><div style="width:44px"></div></div>
+  <div class="h2" style="margin-top:18px">Запиши, пока не забыла. Приговор — потом.</div>
+  <div class="wrap" style="margin-top:16px">${S.people.map(x=>'<button class="chip '+(F.personId===x.id?'on':'')+'" data-a="drPick" data-id="'+x.id+'">'+esc(x.name)+'</button>').join('')}<button class="chip dash" data-a="drAdd">+ Новый</button></div>
+  ${F.adding ? `<div class="row" style="margin-top:10px"><input class="field" data-f="newName" placeholder="Имя" value="${esc(F.newName)}" autocomplete="off"><button class="chip on" style="height:50px" data-a="drAddSave">ОК</button></div>`:''}
+  <label class="card" style="display:flex;flex-direction:column;gap:6px;padding:12px 14px;margin-top:12px"><span class="xs muted">Как довёл</span>
+  <textarea data-f="desc" rows="3" maxlength="200" placeholder="Можно надиктовать: микрофон на клавиатуре" style="background:none;border:0;outline:none;resize:none;font-size:15px;line-height:1.4;padding:0">${esc(F.desc)}</textarea></label>
+  <div style="margin-top:14px"><button class="btn" data-a="drSave" ${F.personId?'':'disabled'}>Завести дело</button></div>
+  <div class="lbl">Ждут приговора · ${list.length}</div>
+  ${list.length ? '<div class="list">'+list.map(e=>`<div class="it between"><div class="grow"><div style="font-weight:600">${esc(shortName(person(e.personId)))} · ${dt(e.date)}</div><div class="small muted" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(e.desc||'без описания')}</div></div><button class="chip" style="height:36px;border-color:var(--acc);font-size:13px" data-a="sentenceDraft" data-id="${e.id}">Вынести</button></div>`).join('')+'</div>' : '<div class="empty">Все дела рассмотрены. Суд свободен.</div>'}`;
+};
+V.quick = () => {
+  return `<div class="top"><button class="iconBtn" data-a="go" data-to="home" aria-label="Закрыть">${I.x}</button><div class="mono">Меня довели</div><div style="width:44px"></div></div>
+  <div class="h1" style="margin-top:24px">Сейчас или потом?</div>
+  <p class="soft">Можно сразу выбрать, что ты с ним сделала, а можно быстро записать и вынести приговор позже.</p>
+  <div style="display:flex;flex-direction:column;gap:10px;margin-top:24px">
+    <button class="btn" data-a="go" data-to="new">${I.gavel} Сразу вынести приговор</button>
+    <button class="btn2" style="height:54px" data-a="go" data-to="drafts">Записать на бегу</button>
+  </div>`;
+};
+
+V.verdict = (p) => {
+  const e = S.eps.find(x=>x.id===p.id); if (!e || !e.artId) return V.home();
+  const a = art(e.artId), pr = person(e.personId), base = a.aff ? art(e.baseArtId) : a;
+  const pe = sentenced().filter(x=>x.personId===e.personId); const tp = totals(pe); const tAll = totals(sentenced());
+  const canAff = base && base.affect;
+  const x = eff(e);
+  return `
+  <div style="text-align:center;padding-top:20px">
+    <div style="width:72px;height:72px;border-radius:36px;background:var(--accDark);color:var(--acc);display:inline-flex;align-items:center;justify-content:center"><span class="${p.fresh?'gavel':''}" style="display:inline-flex;transform-origin:70% 70%">${I.gavel.replace(/22/g,'36')}</span></div>
+    <div style="margin-top:14px"><span class="stamp ${p.fresh?'anim':''}">${e.forgiven==='full'?'ПОМИЛОВАНА':'ПРИГОВОР ВСТУПИЛ В СИЛУ'}</span></div>
+  </div>
+  <div class="card" style="margin-top:22px;padding:18px;border-radius:22px;display:flex;flex-direction:column;gap:10px">
+    <div class="between"><span class="xs" style="font-family:'PT Mono',monospace;color:var(--muted)">${a.code==='Свой'?'КОДЕКС СЕКРЕТАРЯ':'СТ. '+esc(a.num).toUpperCase()+' '+(a.code==='УК'?'УК РБ':'КОАП РБ')}</span><span class="xs muted">${dt(e.date)}</span></div>
+    <div style="font-weight:700;font-size:18px;line-height:1.25">«${esc(e.action)}» — ${esc(pr?pr.name:'')}${e.tags&&e.tags.length?', за то, что '+esc(e.tags.join(', ')):''}</div>
+    ${e.desc?'<div class="small soft" style="background:var(--card2);border-radius:12px;padding:10px 12px;line-height:1.4">«'+esc(e.desc)+'»</div>':''}
+    <div class="small soft" style="line-height:1.4">${esc(a.title)}. Санкция: ${esc(a.sanction)}.</div>
+    <div style="height:1px;background:var(--line)"></div>
+    <div class="between"><span class="small muted">В твой срок</span><span class="num acc" style="font-weight:800;font-size:30px">${plusLine(e)}</span></div>
+    ${e.forgiven?'<div class="xs muted">'+(e.forgiven==='full'?'Помилована':'Смягчено вдвое')+(e.fReason?' — '+esc(e.fReason):'')+'. Изначально: '+valueLine(e.kind,e.val)+'</div>':''}
+    ${base&&base.lifeDeath ? (S.profile.sex==='f' ? '<div class="small" style="border:1px solid var(--line);border-radius:12px;padding:10px 12px;line-height:1.4;color:var(--soft)"><b style="color:var(--text)">Вышка тебе не светит:</b> женщинам её не назначают. Пожизненное тоже. Повезло — записываем максимум лишения свободы.</div>' : '<div class="small" style="border:1px solid var(--line);border-radius:12px;padding:10px 12px;color:var(--soft)">Тебе могли дать и пожизненное, и вышку. Записываем лишение свободы.</div>') : ''}
+  </div>
+  ${canAff ? `<button class="card between" style="width:100%;margin-top:12px;text-align:left" data-a="affect" data-id="${e.id}"><div class="grow"><div style="font-weight:700;font-size:15px">Я Скорпион, меня довели</div><div class="small muted">Смягчающее: природа такая. Суд учтёт аффект</div></div><span class="toggle ${a.aff?'on':''}"><i></i></span></button>`:''}
+  <div class="grid2" style="margin-top:12px">
+    <div class="card"><div class="xs muted">${esc(pr?pr.name.split(' ')[0]:'')} стоит тебе</div><div class="num" style="font-size:20px;margin-top:4px">${fmtY(tp.prison,true)}</div><div class="xs muted">${pe.length}-й эпизод</div></div>
+    <div class="card"><div class="xs muted">Тебе светит всего</div><div class="num" style="font-size:20px;margin-top:4px">${fmtY(tAll.prison,true)}</div><div class="xs muted">${tAll.fine?fmtBV(tAll.fine)+' штрафов':''}</div></div>
+  </div>
+  <div style="margin-top:18px;display:flex;flex-direction:column;gap:6px">
+    <button class="btn" data-a="go" data-to="home">Готово</button>
+    <button class="btn2" data-a="shareCard" style="display:flex;align-items:center;justify-content:center;gap:8px">${I.share} Поделиться без имён</button>
+    <button class="link" data-a="appeal" data-id="${e.id}">Обжаловать (удалить эпизод)</button>
+  </div>`;
+};
+
+V.stats = () => {
+  F = F && F.st ? F : {st:true, per:'month'};
+  const days = {week:7, month:30, quarter:91, year:365, all:1e5}[F.per];
+  const from = Date.now() - days*864e5;
+  const eps = sentenced().filter(e => new Date(e.date).getTime() >= from);
+  const t = totals(eps); const ppl = new Set(eps.map(e=>e.personId));
+  const cnt = {}; eps.forEach(e=>cnt[e.personId]=(cnt[e.personId]||0)+1);
+  const rank = Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a]).slice(0,6); const maxC = Math.max(1,...Object.values(cnt));
+  // динамика
+  let buckets = [];
+  if (F.per==='week'){ for (let i=6;i>=0;i--){ const d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()-i); const s=d.getTime(); buckets.push({l:d.toLocaleDateString('ru-RU',{weekday:'short'}), n:eps.filter(e=>{const t=new Date(e.date).getTime(); return t>=s&&t<s+864e5;}).length}); } }
+  else if (F.per==='month'||F.per==='quarter'){ const W = F.per==='month'?5:13; for (let i=W-1;i>=0;i--){ const f=Date.now()-(i+1)*7*864e5, to=Date.now()-i*7*864e5; buckets.push({l:'н'+(W-i), n:eps.filter(e=>{const t=new Date(e.date).getTime(); return t>f&&t<=to;}).length}); } }
+  else { const n=new Date(); const MM = F.per==='year'?12:Math.min(24, Math.max(1, (()=>{const all=sentenced(); if(!all.length) return 1; const f=new Date(Math.min(...all.map(e=>new Date(e.date).getTime()))); return (n.getFullYear()-f.getFullYear())*12+n.getMonth()-f.getMonth()+1;})()));
+    for (let i=MM-1;i>=0;i--){ const s=new Date(n.getFullYear(), n.getMonth()-i, 1), f=new Date(n.getFullYear(), n.getMonth()-i+1, 1); buckets.push({l:s.toLocaleDateString('ru-RU',{month:'narrow'}), n:eps.filter(e=>{const t=new Date(e.date); return t>=s&&t<f;}).length}); } }
+  const maxB = Math.max(1,...buckets.map(b=>b.n));
+  // за что
+  const tagC = {}; let tagTot = 0; eps.forEach(e=>(e.tags||[]).forEach(x=>{tagC[x]=(tagC[x]||0)+1; tagTot++;}));
+  const tagList = Object.keys(tagC).sort((a,b)=>tagC[b]-tagC[a]).slice(0,6);
+  // когда
+  const wd = [0,0,0,0,0,0,0], hr = {}; eps.forEach(e=>{const d=new Date(e.date); wd[(d.getDay()+6)%7]++; const h=d.getHours(); const k=h-(h%2); hr[k]=(hr[k]||0)+1;});
+  const wdN = ['понедельник','вторник','среда','четверг','пятница','суббота','воскресенье']; const wmax = wd.indexOf(Math.max(...wd)); const hk = Object.keys(hr).sort((a,b)=>hr[b]-hr[a])[0];
+  // любимые статьи
+  const artC = {}; eps.forEach(e=>{ const k=e.action; artC[k]=(artC[k]||0)+1; }); const favA = Object.keys(artC).sort((a,b)=>artC[b]-artC[a])[0];
+  const forgN = eps.filter(e=>e.forgiven).length;
+  return `
+  <div class="mono">Следственный эксперимент</div><div class="h1">Кто и сколько</div>
+  <div class="seg" style="grid-template-columns:repeat(5,1fr);margin-top:14px">${[['week','Неделя'],['month','Месяц'],['quarter','Квартал'],['year','Год'],['all','Всё']].map(([k,l])=>'<button class="'+(F.per===k?'on':'')+'" data-a="per" data-v="'+k+'">'+l+'</button>').join('')}</div>
+  <div class="grid3" style="margin-top:12px">
+    <div class="card" style="padding:10px 12px"><div class="num" style="font-size:20px">${eps.length}</div><div class="xs muted">${plural(eps.length,EPS)}</div></div>
+    <div class="card" style="padding:10px 12px"><div class="num" style="font-size:20px">${ppl.size}</div><div class="xs muted">${plural(ppl.size,['человек','человека','человек'])}</div></div>
+    <div class="card" style="padding:10px 12px"><div class="num acc" style="font-size:20px">+${Math.round(t.prison)}</div><div class="xs muted">${plural(Math.round(t.prison),Y)} срока</div></div>
+  </div>
+  ${eps.length ? `
+  <div class="lbl">Кто доводит чаще</div>
+  ${rank.map((id,i)=>{const p=person(id); return '<button class="hbar" style="width:100%;background:none;border:0;padding:0;color:inherit" data-a="go" data-to="person" data-id="'+id+'"><div class="n" style="text-align:left">'+esc(shortName(p))+'</div><div class="t"><div class="'+(i===0?'on':'')+'" style="width:'+Math.round(cnt[id]/maxC*100)+'%"></div></div><div class="v">'+cnt[id]+'</div></button>';}).join('')}
+  <div class="lbl between" style="display:flex"><span>Динамика</span><span class="xs" style="text-transform:none;letter-spacing:0">пик — ${maxB}</span></div>
+  <div class="wbars" style="grid-template-columns:repeat(${buckets.length},minmax(0,1fr))">${buckets.map(b=>'<div><b class="'+(b.n===maxB&&b.n>0?'on':'')+'" style="height:'+Math.max(3,Math.round(b.n/maxB*64))+'px"></b><span>'+b.l+'</span></div>').join('')}</div>
+  ${tagList.length?`<div class="lbl">За что</div><div class="wrap">${tagList.map(x=>'<div class="tag" style="display:flex;align-items:center;color:var(--text);background:var(--card2);border-color:var(--card2)"><b>'+esc(x)+'</b>&nbsp;'+Math.round(tagC[x]/tagTot*100)+'%</div>').join('')}</div>`:''}
+  <div class="card small" style="margin-top:14px;line-height:1.5"><b>Опасное время:</b> ${wdN[wmax]}${hk!==undefined?', '+String(hk).padStart(2,'0')+':00–'+String(+hk+2).padStart(2,'0')+':00':''}. Скорпиону в это время лучше не звонить.${favA?'<br><b>Любимое наказание:</b> «'+esc(favA)+'» ('+artC[favA]+'×).':''}${forgN?'<br><b>Прощено:</b> '+forgN+' из '+eps.length+'.':''}</div>
+  ` : '<div class="empty">За этот период никто не довёл. Подозрительно спокойно.</div>'}
+  <div class="lbl">Достижения</div>
+  <div>${ACH.map(a=>'<div class="ach '+(S.ach[a.id]?'on':'')+'"><div class="i">'+I.star+'</div><div class="grow t"><div style="font-weight:700">'+a.t+'</div><div class="xs muted">'+a.d+'</div></div></div>').join('')}</div>`;
+};
+
+V.amnesty = () => {
+  F = F && F.am ? F : {am:true, open:null, reason:new Set()};
+  const all = sentenced(); const forgiven = all.filter(e=>e.forgiven);
+  const saved = forgiven.reduce((s,e)=>s + (e.kind==='prison' ? e.val - eff(e).val : 0), 0);
+  const waiting = all.filter(e=>!e.forgiven).sort((a,b)=>new Date(b.date)-new Date(a.date));
+  return `
+  <div class="mono">Отдел помилований</div><div class="h1">Амнистия</div>
+  <div class="small muted" style="margin-top:4px;line-height:1.4">Простила — значит, не сделала. Срок по делу снимается.</div>
+  <div class="grid2" style="margin-top:14px">
+    <div class="card" style="padding:10px 12px"><div class="num acc" style="font-size:20px">−${fmtY(saved,true)}</div><div class="xs muted">скостила себе</div></div>
+    <div class="card" style="padding:10px 12px"><div class="num" style="font-size:20px">${forgiven.length} из ${all.length}</div><div class="xs muted">дел прощено</div></div>
+  </div>
+  <div class="lbl">Ждут решения</div>
+  ${waiting.length ? '<div style="display:flex;flex-direction:column;gap:8px">'+waiting.map(e=>{ const p=person(e.personId); const open = F.open===e.id;
+    if (!open) return `<button class="card between" style="width:100%;text-align:left" data-a="amOpen" data-id="${e.id}"><div class="grow"><div style="font-weight:600">${esc(shortName(p))} · «${esc(e.action)}»</div><div class="xs muted">${plusLine(e)} · ${dt(e.date)}</div></div><span class="chip" style="height:34px;display:flex;align-items:center;font-size:13px">Простить</span></button>`;
+    const pe = sentenced().filter(x=>x.personId===e.personId); const pf = pe.filter(x=>x.forgiven).length;
+    return `<div class="card" style="border:2px solid var(--acc);display:flex;flex-direction:column;gap:10px">
+      <div class="between"><b>${esc(p?p.name:'')} · «${esc(e.action)}»</b><span class="num" style="font-size:14px">${plusLine(e)}</span></div>
+      ${e.desc?'<div class="small soft">«'+esc(e.desc)+'» · '+dt(e.date)+'</div>':''}
+      <div class="xs" style="font-weight:600;letter-spacing:1px;color:var(--muted)">ЗА ЧТО ПРОЩАЕШЬ</div>
+      <div class="wrap">${FORGIVE_TAGS.map(t=>'<button class="tag '+(F.reason.has(t)?'on':'')+'" data-a="amReason" data-v="'+t+'">'+t+'</button>').join('')}</div>
+      <div class="grid2"><button class="btn" style="height:52px;font-size:13px;flex-direction:column;gap:0;font-family:'Golos Text',sans-serif" data-a="forgive" data-id="${e.id}" data-v="full"><b>Помиловать</b><span>−${valueLine(e.kind,e.val)}</span></button>
+      <button class="btn2" style="height:52px;font-size:13px" data-a="forgive" data-id="${e.id}" data-v="half"><b>Смягчить вдвое</b><br>−${valueLine(e.kind,e.kind==='prison'||e.kind==='restr'?Math.round(e.val*6)/12:e.val/2)}</button></div>
+      <div class="xs muted">${esc(p?p.name.split(' ')[0]:'')} ты прощала ${pf} ${plural(pf,['раз','раза','раз'])} из ${pe.length}. ${pf===0?'Скорпионы так обычно не делают, но дело твоё.':'Ты становишься мягче. Подозрительно.'}</div>
+    </div>`; }).join('')+'</div>' : '<div class="empty">Прощать некого. Все отбывают.</div>'}
+  ${forgiven.length ? '<div class="lbl">Уже помилованы</div><div class="list">'+forgiven.sort((a,b)=>new Date(b.fAt)-new Date(a.fAt)).map(e=>{ const canUndo = Date.now()-new Date(e.fAt).getTime() < 864e5; return `<div class="it between"><div class="grow"><div style="font-weight:600">${esc(shortName(person(e.personId)))} · «${esc(e.action)}»</div><div class="xs muted">${e.forgiven==='full'?'помилован':'вдвое'}${e.fReason?' — '+esc(e.fReason):''}</div></div>${canUndo?'<button class="chip" style="height:34px;font-size:13px" data-a="unforgive" data-id="'+e.id+'">Передумала</button>':''}</div>`;}).join('')+'</div>':''}`;
+};
+
+V.settings = () => {
+  const s = S.settings; const trash = S.eps.filter(e=>e.deletedAt);
+  const bd = s.lastBackup ? Math.floor((Date.now()-new Date(s.lastBackup))/864e5) : null;
+  const tg = (k, t, h) => `<button class="between" style="width:100%;background:none;border:0;border-bottom:1px solid var(--line);padding:12px 14px;text-align:left;min-height:56px" data-a="tog" data-k="${k}"><div class="grow"><div style="font-weight:600">${t}</div><div class="xs muted">${h}</div></div><span class="toggle ${s[k]?'on':''}"><i></i></span></button>`;
+  return `
+  <div class="row"><button class="iconBtn" data-a="go" data-to="home" aria-label="Назад">${I.back}</button><div class="h2">Настройки</div></div>
+  <div class="card" style="margin-top:18px;border-color:var(--acc);background:var(--accDark);display:flex;flex-direction:column;gap:10px">
+    <div><b>${bd===null?'Копии дела ещё нет':'Последняя копия — '+(bd===0?'сегодня':bd+' '+plural(bd,D)+' назад')}</b><div class="small soft">Сменишь телефон без копии — всё пропадёт. Сохрани в «Файлы» или iCloud Drive.</div></div>
+    <div class="grid2"><button class="btn" style="height:46px;font-size:13px;font-family:'Golos Text',sans-serif" data-a="exportData">Сохранить копию</button><button class="btn2" data-a="importData">Восстановить</button></div>
+  </div>
+  <div class="lbl">Конспирация</div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <button class="between" style="width:100%;background:none;border:0;border-bottom:1px solid var(--line);padding:12px 14px;text-align:left;min-height:56px" data-a="changePin"><div class="grow"><div style="font-weight:600">Вход по PIN</div><div class="xs muted">При открытии и при возврате в приложение</div></div><span class="xs muted">сменить</span></button>
+    ${tg('blur','Размывать при сворачивании','В переключателе приложений ничего не видно')}
+    ${tg('initials','Только инициалы снаружи','На главной, в рейтинге и в амнистии — «С. К.»')}
+    ${tg('sound','Звук молотка','Удар при каждом приговоре')}
+  </div>
+  <div class="lbl">Суд</div>
+  <div class="card" style="padding:0;overflow:hidden">
+    ${Object.keys(RULES).map(k=>`<button class="between" style="width:100%;background:none;border:0;border-bottom:1px solid var(--line);padding:12px 14px;text-align:left;min-height:50px" data-a="rule" data-v="${k}"><span style="font-weight:600">${RULES[k]}</span>${s.rule===k?'<b class="acc">✓</b>':''}</button>`).join('')}
+    <div class="between" style="padding:10px 14px"><span style="font-weight:600">Базовая величина</span><span class="row" style="gap:6px"><input data-f="bv" inputmode="decimal" value="${s.bv}" style="width:64px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--card2);text-align:center;font-size:15px"> <span class="muted small">BYN</span></span></div>
+  </div>
+  <div class="xs muted" style="margin-top:6px">Правило применяется к новым приговорам. Старые не пересчитываются.</div>
+  <div class="lbl">Кодекс</div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <button class="between" style="width:100%;background:none;border:0;border-bottom:1px solid var(--line);padding:12px 14px;text-align:left;min-height:52px" data-a="go" data-to="codex"><span style="font-weight:600">Все статьи</span><span class="muted small">${allCat().filter(a=>!a.aff).length} статей · ${actionList('',null).length} действий</span></button>
+    <button class="between" style="width:100%;background:none;border:0;padding:12px 14px;text-align:left;min-height:52px" data-a="go" data-to="addArt"><span style="font-weight:600">+ Своя статья в «Кодекс секретаря»</span>${I.chev}</button>
+  </div>
+  ${trash.length?`<div class="lbl">Корзина · ${trash.length}</div><div class="list">${trash.map(e=>`<div class="it between"><div class="grow"><div style="font-weight:600">${esc(shortName(person(e.personId)))} · «${esc(e.action||'черновик')}»</div><div class="xs muted">удалится через ${7-Math.floor((Date.now()-new Date(e.deletedAt))/864e5)} дн.</div></div><button class="chip" style="height:34px;font-size:13px" data-a="restore" data-id="${e.id}">Вернуть</button></div>`).join('')}</div>`:''}
+  <div class="lbl">Опасная зона</div>
+  <button class="btn2" style="border-color:#7a3a33;color:#ff8a7a" data-a="wipe">Сбросить всё и начать заново</button>
+  <div class="xs" style="text-align:center;color:var(--dim);font-family:'PT Mono',monospace;margin-top:28px">Зона комфорта · сделано с любовью для Скорпиона</div>`;
+};
+
+V.codex = () => {
+  F = F && F.cx ? F : {cx:true, q:''};
+  const list = allCat().filter(a=>!a.aff || true);
+  return `<div class="row"><button class="iconBtn" data-a="go" data-to="settings" aria-label="Назад">${I.back}</button><div class="h2">Кодекс</div></div>
+  <label class="field row" style="margin-top:16px;color:var(--muted)">${I.search}<input data-f="q" placeholder="Поиск по статьям" value="${esc(F.q)}" style="flex:1;background:none;border:0;outline:none;font-size:15px;color:var(--text)" autocomplete="off"></label>
+  ${CATS.map(c=>{ const arr = list.filter(a=>a.cat===c && (!F.q || (a.title+' '+a.num+' '+(a.acts||[]).join(' ')).toLowerCase().includes(F.q.toLowerCase()))); if(!arr.length) return ''; return '<div class="lbl">'+c+'</div><div class="list">'+arr.map(a=>`<div class="it"><div class="between"><b>${a.code==='Свой'?'Своя':'Ст. '+esc(a.num)+' '+a.code}</b>${a.custom?'<button class="chip" style="height:30px;font-size:12px" data-a="delArt" data-id="'+a.id+'">Удалить</button>':''}</div><div class="small" style="margin-top:2px">${esc(a.title)}</div><div class="xs soft" style="margin-top:4px">${esc(a.sanction)}</div>${a.acts&&a.acts.length?'<div class="xs muted" style="margin-top:4px">Действия: '+a.acts.map(esc).join(', ')+'</div>':''}</div>`).join('')+'</div>'; }).join('')}
+  <div class="xs muted" style="margin-top:20px;line-height:1.5">Санкции — по УК и КоАП Республики Беларусь. Это игра: цифры приблизительные и не являются юридической консультацией.</div>`;
+};
+V.addArt = () => {
+  F = F && F.aa ? F : {aa:true, name:'', kind:'fine', amount:'5'};
+  return `<div class="row"><button class="iconBtn" data-a="go" data-to="settings" aria-label="Назад">${I.back}</button><div class="h2">Своя статья</div></div>
+  <p class="soft small" style="margin-top:14px">Придумай ответку и наказание за неё — оно будет суммироваться как настоящее.</p>
+  <div class="lbl">Что ты с ним сделаешь</div>
+  <input class="field" data-f="name" placeholder="Например: «Потерять его заявление»" value="${esc(F.name)}" autocomplete="off">
+  <div class="lbl">Наказание</div>
+  <div class="seg" style="grid-template-columns:repeat(3,1fr)">${[['fine','Штраф, БВ'],['arrestAdm','Арест, сут.'],['hours','Работы, ч.']].map(([k,l])=>'<button class="'+(F.kind===k?'on':'')+'" data-a="aaKind" data-v="'+k+'">'+l+'</button>').join('')}</div>
+  <div class="seg" style="grid-template-columns:repeat(2,1fr);margin-top:6px">${[['restr','Огр. свободы, мес.'],['prison','Лишение свободы, мес.']].map(([k,l])=>'<button class="'+(F.kind===k?'on':'')+'" data-a="aaKind" data-v="'+k+'">'+l+'</button>').join('')}</div>
+  <input class="field" data-f="amount" inputmode="decimal" placeholder="Сколько" value="${esc(F.amount)}" style="margin-top:10px">
+  <div style="margin-top:20px"><button class="btn" data-a="aaSave">Внести в кодекс</button></div>`;
+};
+
+/* ================= ДЕЙСТВИЯ ================= */
+const A = {};
+A.go = d => { F = null; go(d.to, {id:d.id}); };
+A.onbSex = d => { F.sex = d.v; render(); };
+A.onbDone = () => {
+  if (!F.name.trim()) return toast('Впиши, как тебя записать');
+  if (!/^\d{4}$/.test(F.pin)) return toast('PIN — ровно 4 цифры');
+  S.profile = {name:F.name.trim(), sex:F.sex, pin:F.pin, created:new Date().toISOString()};
+  // демо-дело
+  const pid = uid(); S.people.push({id:pid, name:'Демо Петрович', role:'Хозчасть', created:new Date().toISOString(), demo:true});
+  const e = {id:uid(), personId:pid, date:new Date(Date.now()-3600e3).toISOString(), desc:'Поставил коробки с бумагой прямо на мой стол', tags:['вещи на мой стол'], action:'Разнести кабинет', demo:true};
+  setVerdict(e, art('u1')); S.eps.push(e);
+  save(); F = null; go('home');
+};
+A.pinKey = d => {
+  if (d.k==='⌫') pinBuf = pinBuf.slice(0,-1); else if (pinBuf.length<4) pinBuf += d.k;
+  if (pinBuf.length===4){ if (pinBuf===S.profile.pin){ locked=false; pinBuf=''; render(); return; } pinBuf=''; render(); toast('Неверный PIN. Подозрительно.'); return; }
+  render();
+};
+A.newQuick = () => { F = null; go('quick'); };
+A.newFor = d => { F = null; go('new', {personId:d.id}); };
+A.cancelNew = () => { F = null; go('home'); };
+A.pickPerson = d => { F.personId = d.id; render(); };
+A.addInline = () => { F.adding = true; render(); focusF('newName'); };
+A.addInlineSave = () => { const n = F.newName.trim(); if (!n) return; const p = {id:uid(), name:n, role:'', created:new Date().toISOString()}; S.people.push(p); save(); F.personId = p.id; F.adding=false; F.newName=''; render(); };
+A.tag = d => { F.tags.has(d.v) ? F.tags.delete(d.v) : F.tags.add(d.v); render(); };
+A.cat = d => { F.cat = d.v; render(); };
+A.pickAct = d => { F.artId = d.id; F.action = d.n; render(); };
+A.randomAct = () => { const l = actionList('', null); const r = l[Math.floor(Math.random()*l.length)]; F.artId=r.a.id; F.action=r.n; F.q=''; F.cat=r.a.cat; render(); setTimeout(()=>{ const el=document.querySelector('.act.on'); if(el) el.scrollIntoView({block:'center',behavior:'smooth'}); },50); toast('Жало выбрало: «'+r.n+'»'); };
+A.sentence = () => {
+  if (!F.personId || !F.artId) return;
+  let a = art(F.artId);
+  // повторность
+  if (a.repeat && sentenced().some(x=>x.personId===F.personId && x.artId===a.id && x.forgiven!=='full')) { a = art(a.repeat); toast('Повторно — суд применил '+a.num+' '+a.code); }
+  let e = F.draftId ? S.eps.find(x=>x.id===F.draftId) : null;
+  if (!e){ e = {id:uid(), personId:F.personId, date:new Date().toISOString()}; S.eps.push(e); }
+  e.personId = F.personId; e.desc = F.desc.trim(); e.tags = Array.from(F.tags); e.action = F.action;
+  setVerdict(e, a); save(); F = null; gavelSound(); go('verdict', {id:e.id, fresh:true});
+};
+A.saveDraft = () => {
+  if (!F.personId) return toast('Сначала выбери, кто довёл');
+  S.eps.push({id:uid(), personId:F.personId, date:new Date().toISOString(), desc:F.desc.trim(), tags:Array.from(F.tags)}); save(); F=null; toast('Дело заведено. Приговор — потом.'); go('home');
+};
+A.drPick = d => { F.personId = d.id; render(); };
+A.drAdd = () => { F.adding = true; render(); focusF('newName'); };
+A.drAddSave = () => { const n = F.newName.trim(); if (!n) return; const p = {id:uid(), name:n, role:'', created:new Date().toISOString()}; S.people.push(p); save(); F.personId=p.id; F.adding=false; F.newName=''; render(); };
+A.drSave = () => { if (!F.personId) return; S.eps.push({id:uid(), personId:F.personId, date:new Date().toISOString(), desc:F.desc.trim(), tags:[]}); save(); const keep = {dr:true, personId:null, adding:false, newName:'', desc:''}; F = keep; toast('Дело заведено. Приговор — потом.'); render(); };
+A.sentenceDraft = d => { F = null; go('new', {draftId:d.id}); };
+A.affect = d => {
+  const e = S.eps.find(x=>x.id===d.id); const a = art(e.artId);
+  if (a.aff){ const b = art(e.baseArtId); setVerdict(e, b); delete e.baseArtId; toast('Аффект снят. Суд суров.'); }
+  else { const b = art(a.affect); e.baseArtId = a.id; setVerdict(e, b); toast('Суд учёл: ты Скорпион, тебя довели'); }
+  save(); render();
+};
+A.appeal = async d => { if (!await ask({title:'Обжаловать приговор?', text:'Эпизод уйдёт в корзину и 7 дней будет лежать в настройках — можно вернуть.', ok:'Обжаловать'})) return; const e = S.eps.find(x=>x.id===d.id); e.deletedAt = new Date().toISOString(); save(); toast('Обжаловано. Эпизод в корзине.'); go('home'); };
+A.pplAdd = () => { F.adding = true; render(); focusF('newName'); };
+A.pplAddCancel = () => { F.adding=false; render(); };
+A.pplAddSave = () => { const n = F.newName.trim(); if (!n) return toast('Впиши имя'); S.people.push({id:uid(), name:n, role:F.newRole.trim(), created:new Date().toISOString()}); save(); F.adding=false; F.newName=''; F.newRole=''; toast('Внесён в дело'); render(); };
+A.pplSort = d => { F.sort = d.v; render(); };
+A.renamePerson = async d => { const p = person(d.id); const r = await ask({title:'Переименовать', inputs:[{ph:'Имя', v:p.name},{ph:'Отдел или должность', v:p.role||''}], ok:'Сохранить'}); if (!r || !r[0].trim()) return; p.name = r[0].trim(); p.role = r[1].trim(); save(); render(); };
+A.delPerson = async d => { const p = person(d.id); if (!await ask({title:'Закрыть дело «'+p.name+'»?', text:'Человек и все его эпизоды удалятся навсегда.', ok:'Удалить', danger:true})) return; S.people = S.people.filter(x=>x.id!==d.id); S.eps = S.eps.filter(e=>e.personId!==d.id); save(); F=null; toast('Дело закрыто'); go('people'); };
+A.delDemo = () => { const ids = S.people.filter(p=>p.demo).map(p=>p.id); S.people = S.people.filter(p=>!p.demo); S.eps = S.eps.filter(e=>!ids.includes(e.personId)); S.ach = {}; save(); toast('Демо удалено. Теперь по-настоящему.'); render(); };
+A.per = d => { F.per = d.v; render(); };
+A.amOpen = d => { F.open = d.id; F.reason = new Set(); render(); };
+A.amReason = d => { F.reason.has(d.v) ? F.reason.delete(d.v) : F.reason.add(d.v); render(); };
+A.forgive = d => { const e = S.eps.find(x=>x.id===d.id); e.forgiven = d.v; e.fReason = Array.from(F.reason).join(', '); e.fAt = new Date().toISOString(); save(); F.open=null; toast(d.v==='full'?'Помилован. Скорпион отвёл жало.':'Смягчено вдвое. Но осадочек остался.'); render(); };
+A.unforgive = d => { const e = S.eps.find(x=>x.id===d.id); delete e.forgiven; delete e.fReason; delete e.fAt; save(); toast('Передумала. Срок вернулся.'); render(); };
+A.tog = d => { S.settings[d.k] = !S.settings[d.k]; save(); render(); };
+A.rule = d => { S.settings.rule = d.v; save(); render(); };
+A.changePin = async () => { const r = await ask({title:'Новый PIN', inputs:[{ph:'4 цифры', num:true}], ok:'Сохранить'}); if (!r) return; const p = r[0]; if (!/^\d{4}$/.test(p)) return toast('PIN — ровно 4 цифры'); S.profile.pin = p; save(); toast('PIN изменён'); };
+A.restore = d => { const e = S.eps.find(x=>x.id===d.id); delete e.deletedAt; save(); toast('Вернула'); render(); };
+A.wipe = async () => { if (!await ask({title:'Стереть всё?', text:'Люди, эпизоды, настройки и PIN удалятся. Отменить нельзя. Копию дела сохранила?', ok:'Стереть всё', danger:true})) return; S = blank(); save(); F=null; locked=false; go('home'); };
+A.exportData = async () => {
+  const data = JSON.stringify(Object.assign({app:'zona-komforta', exported:new Date().toISOString()}, S), null, 1);
+  const name = 'delo-'+new Date().toISOString().slice(0,10)+'.json';
+  const file = new File([data], name, {type:'application/json'});
+  try {
+    if (navigator.canShare && navigator.canShare({files:[file]})) { await navigator.share({files:[file], title:'Копия дела'}); }
+    else { const u = URL.createObjectURL(file); const a = document.createElement('a'); a.href=u; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u), 4000); }
+    S.settings.lastBackup = new Date().toISOString(); save(); toast('Копия дела сохранена'); render();
+  } catch(err){ if (err && err.name!=='AbortError') toast('Не получилось сохранить'); }
+};
+A.importData = () => document.getElementById('importFile').click();
+document.getElementById('importFile').addEventListener('change', ev => {
+  const f = ev.target.files[0]; if (!f) return; const r = new FileReader();
+  r.onload = async () => { let d; try { d = JSON.parse(r.result); if (!d.people || !d.eps) throw 0; } catch(e){ return toast('Это не копия дела'); } if (!await ask({title:'Восстановить дело?', text:'Текущее дело заменится копией от '+(d.exported?new Date(d.exported).toLocaleDateString('ru-RU'):'?')+'.', ok:'Восстановить'})) return; try { delete d.app; delete d.exported; S = Object.assign(blank(), d, {settings:Object.assign(blank().settings, d.settings||{})}); save(); toast('Дело восстановлено'); F=null; go('home'); } catch(e){ toast('Это не копия дела'); } };
+  r.readAsText(f); ev.target.value='';
+});
+A.aaKind = d => { F.kind = d.v; render(); };
+A.aaSave = () => {
+  const n = F.name.trim(); let v = parseFloat(String(F.amount).replace(',','.'));
+  if (!n) return toast('Как называется ответка?'); if (!(v>0)) return toast('Укажи, сколько');
+  const k = F.kind; let val = v; if (k==='prison'||k==='restr') val = Math.round(v)/12;
+  const sanction = KIND_LABEL[k][0].toUpperCase()+KIND_LABEL[k].slice(1)+' '+(k==='prison'||k==='restr'? v+' мес.' : k==='fine'? v+' БВ' : k==='arrestAdm'? v+' сут.' : v+' ч.')+' (выдуманная санкция)';
+  S.custom.push({id:'x'+uid(), code:'Свой', num:'КС', title:'Кодекс секретаря', sev:k==='prison'?3:1, cat:'Кодекс секретаря', kind:k, min:val, max:val, sanction, acts:[n], custom:true, v:true});
+  save(); F=null; toast('Статья внесена'); go('codex');
+};
+A.delArt = async d => { if (!await ask({title:'Удалить свою статью?', text:'Старые приговоры по ней останутся.', ok:'Удалить', danger:true})) return; S.custom = S.custom.filter(a=>a.id!==d.id); save(); render(); };
+A.shareCard = async () => {
+  const t = totals(sentenced()); const c = document.createElement('canvas'); c.width=1080; c.height=1350; const x = c.getContext('2d');
+  x.fillStyle='#0F1014'; x.fillRect(0,0,1080,1350);
+  x.fillStyle='#9A9DA6'; x.font='36px "PT Mono", monospace'; x.fillText('ДЕЛО № 2026/001 · ЗНАК: СКОРПИОН', 90, 160);
+  x.fillStyle='#F2F0EB'; x.font='700 64px Unbounded, sans-serif'; x.fillText('Зона комфорта', 90, 250);
+  x.fillStyle='#9A9DA6'; x.font='600 40px "Golos Text", sans-serif'; x.fillText('МНЕ СВЕТИТ', 90, 470);
+  const [yy] = splitYM(t.prison); x.fillStyle='#C6F36B'; x.font='800 300px Unbounded, sans-serif'; x.fillText(String(yy), 80, 760);
+  x.fillStyle='#F2F0EB'; x.font='500 60px Unbounded, sans-serif'; x.fillText(plural(yy,Y), 90, 860);
+  const cnt={}; sentenced().forEach(e=>cnt[e.personId]=(cnt[e.personId]||0)+1); const tid=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0]; const tp=person(tid);
+  x.fillStyle='#9A9DA6'; x.font='40px "Golos Text", sans-serif'; x.fillText('Штрафы: '+fmtBV(t.fine)+' · '+fmtRub(t.fine), 90, 1000);
+  if (tp){ const w=tp.name.trim().split(/\s+/).map(s=>s[0].toUpperCase()+'.').join(' '); x.fillText('Главный доводящий: '+w, 90, 1070); }
+  x.fillStyle='#6B6F7A'; x.font='32px "PT Mono", monospace'; x.fillText('Скорпиона лучше не трогать', 90, 1250);
+  c.toBlob(async b => { const f = new File([b], 'zona-komforta.png', {type:'image/png'});
+    try { if (navigator.canShare && navigator.canShare({files:[f]})) await navigator.share({files:[f]}); else { const u=URL.createObjectURL(f); const a=document.createElement('a'); a.href=u; a.download='zona-komforta.png'; a.click(); setTimeout(()=>URL.revokeObjectURL(u),4000); } } catch(e){} }, 'image/png');
+};
+
+function ask(o){ return new Promise(res => {
+  const w = document.createElement('div'); w.className = 'modalWrap';
+  w.innerHTML = '<div class="modal" role="dialog" aria-modal="true"><div class="h2" style="font-size:18px">'+esc(o.title)+'</div>'+(o.text?'<p class="soft small" style="line-height:1.45">'+esc(o.text)+'</p>':'')+
+    (o.inputs||[]).map((i,n)=>'<input class="field" id="mi'+n+'" placeholder="'+esc(i.ph||'')+'" value="'+esc(i.v||'')+'"'+(i.num?' inputmode="numeric" pattern="[0-9]*" maxlength="4"':'')+' style="margin-top:8px" autocomplete="off">').join('')+
+    '<div class="grid2" style="margin-top:16px"><button class="btn2" data-m="0">'+esc(o.cancel||'Отмена')+'</button><button class="btn" style="height:46px;font-family:\'Golos Text\',sans-serif;font-size:14px;'+(o.danger?'background:#ff8a7a':'')+'" data-m="1">'+esc(o.ok||'ОК')+'</button></div></div>';
+  document.body.appendChild(w);
+  w.addEventListener('click', e => { const b = e.target.closest('[data-m]'); if (!b && e.target!==w) return; const ok = !!b && b.dataset.m==='1'; const vals = (o.inputs||[]).map((_,n)=>document.getElementById('mi'+n).value); w.remove(); res(ok ? (o.inputs ? vals : true) : null); });
+  setTimeout(()=>{ const f = w.querySelector('input'); if (f) f.focus(); }, 30);
+}); }
+function focusF(k){ setTimeout(()=>{ const el = document.querySelector('[data-f="'+k+'"]'); if (el) el.focus(); }, 30); }
+document.addEventListener('click', ev => { const el = ev.target.closest('[data-a]'); if (!el) return; const f = A[el.dataset.a]; if (f){ ev.preventDefault(); f(el.dataset, el); } });
+document.addEventListener('input', ev => {
+  const k = ev.target.dataset && ev.target.dataset.f; if (!k) return;
+  if (k==='bv'){ const v = parseFloat(ev.target.value.replace(',','.')); if (v>0){ S.settings.bv = v; save(); } return; }
+  if (!F) return; F[k] = ev.target.value;
+  if (k==='q' && F.ep){ const box = document.getElementById('acts'); if (box) box.innerHTML = actsHtml(actionList(F.q, F.cat)); }
+  else if (k==='q'){ const pos = ev.target.selectionStart; render(); const el = document.querySelector('[data-f="q"]'); if (el){ el.focus(); el.setSelectionRange(pos,pos); } }
+  if (k==='desc'){ const c = document.getElementById('cnt'); if (c) c.textContent = F.desc.length+' / 200'; }
+  if ((k==='newName' && F.dr) ) {}
+});
+
+/* ================= ЖИЗНЕННЫЙ ЦИКЛ ================= */
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden){ hiddenAt = Date.now(); if (S.settings.blur) document.body.classList.add('blur'); }
+  else { document.body.classList.remove('blur'); if (S.profile && S.profile.pin && Date.now()-hiddenAt > 15000){ locked = true; pinBuf=''; render(); } }
+});
+window.addEventListener('pagehide', () => { if (S.settings.blur) document.body.classList.add('blur'); });
+if (S.profile && S.profile.pin) locked = true;
+render();
+if ('serviceWorker' in navigator && location.protocol==='https:' && !/claude\.ai|claudeusercontent/.test(location.host)) { navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+</script>
+</body>
+</html>
